@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      # scripted = offline deterministic policy. For a real LLM:
+      #   ADA_LLM_PROVIDER=openai  + OPENAI_API_KEY=...  (OpenAI)
+      #   ADA_LLM_BASE_URL=http://ollama:11434/v1 + ADA_LLM_MODEL=qwen2.5:7b (local SLM)
+      ADA_LLM_PROVIDER: ${ADA_LLM_PROVIDER:-scripted}
+      ADA_LLM_MODEL: ${ADA_LLM_MODEL:-gpt-4o-mini}
+      ADA_LLM_BASE_URL: ${ADA_LLM_BASE_URL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-none}
+
+  # One-shot experiment runner:  docker compose run --rm experiment
+  experiment:
+    build: .
+    profiles: ["tools"]
+    command: ["ada", "run", "experiments/default.yaml"]
+    environment:
+      ADA_LLM_PROVIDER: ${ADA_LLM_PROVIDER:-scripted}
+    volumes: ["./results:/app/results"]

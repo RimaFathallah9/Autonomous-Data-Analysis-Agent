@@ -1,0 +1,23 @@
+# Full experiment: 10 seeds so paired Wilcoxon tests can reach p<0.05.
+run_name: default
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+suites:
+  cleaning:
+    datasets: [wine, breast_cancer_wdbc, synthetic_tabular]
+    methods: [no_cleaning, naive, agent, oracle]
+    conditions:
+      low:  {missing_rate: 0.03, missing_mechanism: MCAR, outlier_rate: 0.01, typo_rate: 0.01, duplicate_rate: 0.02}
+      high: {missing_rate: 0.15, missing_mechanism: MAR,  outlier_rate: 0.05, typo_rate: 0.05, duplicate_rate: 0.10}
+
+  row_anomaly:
+    contamination: 0.05
+    datasets:
+      - {name: breast_cancer_wdbc, normal_label: 1}   # benign = normal, malignant = anomaly
+      - {name: wine, normal_label: 1}
+    methods: [zscore_max, lof, isolation_forest, agent]
+
+  timeseries:
+    datasets: [synthetic_timeseries]
+    n_events: 8
+    methods: [naive_zscore, agent]

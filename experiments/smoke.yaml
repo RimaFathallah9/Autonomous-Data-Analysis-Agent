@@ -1,0 +1,19 @@
+# Tiny config used by tests / quick sanity checks (seconds, not minutes).
+run_name: smoke
+seeds: [0, 1]
+
+suites:
+  cleaning:
+    datasets: [synthetic_tabular]
+    methods: [no_cleaning, naive, agent, oracle]
+    conditions:
+      low: {missing_rate: 0.03, outlier_rate: 0.01, typo_rate: 0.01, duplicate_rate: 0.02}
+  row_anomaly:
+    contamination: 0.05
+    datasets:
+      - {name: wine, normal_label: 1}
+    methods: [zscore_max, isolation_forest, agent]
+  timeseries:
+    datasets: [synthetic_timeseries]
+    n_events: 6
+    methods: [naive_zscore, agent]
